@@ -4,7 +4,7 @@ using PublisherReader.Service.Interfaces;
 
 namespace PublisherReader.Service
 {
-    public class PublisherService : Hub<IPublisherService>, IPublisherService
+    public class PublisherHub : Hub, IPublisherHub
     {
         private static Readers _readers = new Readers();
 
@@ -21,14 +21,14 @@ namespace PublisherReader.Service
         }
 
 
-        public string ListUsers()
+        public string ListReaders()
         {
             return _readers.ListReaders();
         }
 
         public async Task SendMessageToAll(string message)
         {
-            await Clients.All.SendMessageToAll(message);
+            await Clients.All.SendAsync("SendMessageToAll", message);
         }
     }
 }

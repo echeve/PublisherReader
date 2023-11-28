@@ -1,18 +1,25 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using Moq;
+using PublisherReader.webApi.Hubs;
+using PublisherReader.webApi.Managers.Interface;
 
 namespace PublisherReader.Service.Test
 {
     [TestFixture]
-    public class PublisherServiceTest
+    public class NotificationsHubTest
     {
-        PublisherService _sut;
+        NotificationsHub _sut;
         Mock<HubCallerContext> _hubContextMock;
+        Mock<IReaderManager> _readerManagerMock;
+        Mock<ILogger<NotificationsHub>> _loggerMock;
 
         [SetUp]
         public void Setup()
         {
-            _sut = new PublisherService();
+            _readerManagerMock = new Mock<IReaderManager>();
+            _loggerMock = new Mock<ILogger<NotificationsHub>>();
+            _sut = new NotificationsHub(_readerManagerMock.Object, _loggerMock.Object);
             _hubContextMock = new Mock<HubCallerContext>();
             _sut.Context = _hubContextMock.Object;
         }
@@ -27,7 +34,7 @@ namespace PublisherReader.Service.Test
             await _sut.OnConnectedAsync();
 
             //Assert
-            Assert.IsNotEmpty(_sut.ListUsers());
+            _readerManagerMock.Verify(reader => reader.AddReader("Pablo"), Times.Once);
         }
 
         [Test]
@@ -41,22 +48,7 @@ namespace PublisherReader.Service.Test
             await _sut.OnDisconnectedAsync(null);
 
             //Assert
-            Assert.IsEmpty(_sut.ListUsers());
-        }
-
-        [Test]
-        public async Task List_connected_users_Should_List_all_readers_connected()
-        {
-            //Arrange
-            _hubContextMock.SetupGet(hc => hc.ConnectionId).Returns("Pablo");
-            await _sut.OnConnectedAsync();
-
-            //Act
-            var result = _sut.ListUsers();
-
-            //Assert
-            Assert.IsNotEmpty(result);
-            Assert.That(result.Contains("reader: Pablo"));
+            _readerManagerMock.Verify(reader => reader.RemoveReader("Pablo"), Times.Once);
         }
     }
 }

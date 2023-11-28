@@ -1,17 +1,17 @@
-﻿using PublisherReader.Service.Entities;
-using System.Reflection.PortableExecutable;
+﻿using PublisherReader.webApi.Managers.Implementation;
+using PublisherReader.webApi.Managers.Interface;
 
 namespace PublisherReader.Service.Test
 {
     [TestFixture]
-    public class ReaderTest
+    public class ReaderManagerTest
     {
-        private Readers _sut;
+        private IReaderManager _sut;
 
         [SetUp]
         public void Setup()
         {
-            _sut = new Readers();
+            _sut = new ReaderManager();
         }
 
 
@@ -22,7 +22,7 @@ namespace PublisherReader.Service.Test
             _sut.AddReader("Pablo");
 
             //Assert
-            Assert.IsTrue(_sut.ListReaders().Contains("reader: Pablo"));
+            Assert.IsTrue(_sut.ListConnectedReaders().Contains("reader: Pablo"));
         }
 
         [Test]
@@ -30,11 +30,11 @@ namespace PublisherReader.Service.Test
         {
             //Arrange
             _sut.AddReader("Pablo");
-            var initalList = _sut.ListReaders();
+            var initalList = _sut.ListConnectedReaders();
 
             //Act
             _sut.AddReader("Pablo");
-            var finalList = _sut.ListReaders();
+            var finalList = _sut.ListConnectedReaders();
 
             //Assert
             Assert.That(finalList.Length, Is.EqualTo(initalList.Length));
@@ -51,7 +51,7 @@ namespace PublisherReader.Service.Test
             _sut.RemoveReader("Pablo");
 
             //Assert
-            Assert.IsFalse(_sut.ListReaders().Contains("reader: Pablo"));
+            Assert.IsFalse(_sut.ListConnectedReaders().Contains("reader: Pablo"));
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace PublisherReader.Service.Test
             _sut.RemoveReader("Pablo");
 
             //Assert
-            Assert.IsFalse(_sut.ListReaders().Contains("reader: Pablo"));
+            Assert.IsFalse(_sut.ListConnectedReaders().Contains("reader: Pablo"));
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace PublisherReader.Service.Test
             _sut.AddReader("Alicia");
 
             //Act
-            var result = _sut.ListReaders();
+            var result = _sut.ListConnectedReaders();
 
             //Assert
             Assert.IsTrue(result.Contains("reader: Pablo"));

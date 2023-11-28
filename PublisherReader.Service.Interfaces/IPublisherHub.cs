@@ -1,8 +1,8 @@
 ﻿namespace PublisherReader.Service.Interfaces
 {
-    public interface IPublisherService
+    public interface IPublisherHub
     {
-        string ListUsers();
+        string ListReaders();
 
         Task SendMessageToAll(string message);
     }
