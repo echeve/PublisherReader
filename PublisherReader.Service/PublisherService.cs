@@ -1,23 +1,34 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using PublisherReader.Service.Entities;
 using PublisherReader.Service.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PublisherReader.Service
 {
     public class PublisherService : Hub<IPublisherService>, IPublisherService
     {
-        public string ListUsers()
+        private static Readers _readers = new Readers();
+
+        public override Task OnConnectedAsync()
         {
-            throw new NotImplementedException();
+            _readers.AddReader(Context.ConnectionId);
+            return base.OnConnectedAsync();
         }
 
-        public Task SendMessageToAll(string message)
+        public override Task OnDisconnectedAsync(Exception exception)
         {
-            throw new NotImplementedException();
+            _readers.RemoveReader(Context.ConnectionId);
+            return base.OnDisconnectedAsync(exception);
+        }
+
+
+        public string ListUsers()
+        {
+            return _readers.ListReaders();
+        }
+
+        public async Task SendMessageToAll(string message)
+        {
+            await Clients.All.SendMessageToAll(message);
         }
     }
 }

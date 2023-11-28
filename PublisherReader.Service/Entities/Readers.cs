@@ -1,10 +1,10 @@
 ﻿namespace PublisherReader.Service.Entities
 {
-    public class Reader
+    public class Readers
     {
         private IList<string> _reader;
 
-        public Reader() 
+        public Readers() 
         {
             _reader = new List<string>();   
         }

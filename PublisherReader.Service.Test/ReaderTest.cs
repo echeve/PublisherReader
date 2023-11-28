@@ -6,12 +6,12 @@ namespace PublisherReader.Service.Test
     [TestFixture]
     public class ReaderTest
     {
-        private Reader _sut;
+        private Readers _sut;
 
         [SetUp]
         public void Setup()
         {
-            _sut = new Reader();
+            _sut = new Readers();
         }
 
 
